@@ -1,0 +1,125 @@
+openapi: 3.0.1
+info:
+  title: MEN Web API
+  description: 'API for managing sessions and authentication for MEN system.'
+  license:
+    name: MEN API
+  version: 1.0.0
+servers:
+  - url: /MENApi
+paths:
+  /sessions/creates:
+    post:
+      tags:
+        - Session
+      summary: Get JWT Token
+      description: "Endpoint to create a session and retrieve a JWT token."
+      requestBody:
+        description: "User credentials for authentication."
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserModel'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthNoOkResponse'
+              example: 
+                status: false
+                message: "Username or password is incorrect"
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthNoOkResponse'
+              example: 
+                status: false
+                message: "An error occurred, please try again later"
+
+components:
+  schemas:
+    AuthNoOkResponse:
+      type: object
+      description: "Response object for unsuccessful authentication."
+      properties:
+        statut:
+          type: boolean
+          description: "Indicates the status of the authentication."
+          example : false
+        message:
+          type: string
+          nullable: true
+          description: "Optional message accompanying the authentication status."
+          example : Username or password is incorrect
+      additionalProperties: false
+      example:
+        statut: false
+        message: "Username or password is incorrect"
+
+    SessionResponse:
+      type: object
+      description: "Response object for session creation with associated token."
+      properties:
+        statut:
+          type: boolean
+          description: "Indicates whether the session was successfully created."
+          example: true
+        message:
+          type: string
+          nullable: true
+          description: "Optional message accompanying the session status."
+          example : "Authentifié avec succés"
+        token:
+          $ref: '#/components/schemas/Token'
+      additionalProperties: false
+
+    Token:
+      type: object
+      description: "Object representing authentication and authorization tokens."
+      properties:
+        idToken:
+          type: string
+          nullable: true
+          example: 6220a2ee-ce85-4d45-a2a3-7790ede773e4
+          description: "ID token for authentication purposes."
+        accessToken:
+          type: string
+          nullable: true
+          example : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidXNlciIsImp0aSI6IjYyMjBhMmVlLWNlODUtNGQ0NS1hMmEzLTc3OTBlZGU3NzNlNCIsImV4cCI6MTcwNzkzNDY1NiwiaXNzIjoid3d3LnRhYWxpbS5tYSIsImF1ZCI6IkNvbGxhYm9yYXRpb24ifQ.s3nncudxJRaYRgqlNIzZBW9pzqdIzYm0gWTXrGSHctT
+          description: "Access token for authorization purposes."
+        dateExpiration:
+          type: string
+          example: 14/02/2024 18:17:36
+          description: "Expiration date of the tokens."
+      additionalProperties: false
+      example:
+        idToken: 6220a2ee-ce85-4d45-a2a3-7790ede773e4
+        accessToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidXNlciIsImp0aSI6IjYyMjBhMmVlLWNlODUtNGQ0NS1hMmEzLTc3OTBlZGU3NzNlNCIsImV4cCI6MTcwNzkzNDY1NiwiaXNzIjoid3d3LnRhYWxpbS5tYSIsImF1ZCI6IkNvbGxhYm9yYXRpb24ifQ.s3nncudxJRaYRgqlNIzZBW9pzqdIzYm0gWTXrGSHctT
+        dateExpiration: 14/02/2024 18:17:36
+        
+    UserModel:
+      type: object
+      description: "Object representing a user with username and password."
+      properties:
+        username:
+          type: string
+          nullable: true
+          description: "The username of the user."
+          example : user
+        password:
+          type: string
+          nullable: true
+          description: "The password of the user."
+          example : password
+      additionalProperties: false
