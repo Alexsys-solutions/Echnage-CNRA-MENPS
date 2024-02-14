@@ -8,7 +8,7 @@ info:
 servers:
   - url: /MENApi
 paths:
-  /sessions/creates:
+  /Session/Create:
     post:
       tags:
         - Session
@@ -34,18 +34,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AuthNoOkResponse'
-              example: 
-                status: false
-                message: "Username or password is incorrect"
-        '500':
-          description: Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AuthNoOkResponse'
-              example: 
-                status: false
-                message: "An error occurred, please try again later"
 
 components:
   schemas:
