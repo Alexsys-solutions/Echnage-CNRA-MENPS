@@ -80,6 +80,7 @@ components:
       properties:
         campaignId:
           type: integer
+          format: int64
           description: The unique identifier of the newly created campaign.
           example: 123456
 
@@ -106,22 +107,28 @@ components:
           items:
             $ref: '#/components/schemas/StudentData'
           example:
-            - massarIdentifier: 'ABC123456790'
+            - massarIdentifier: 'A123456790'
               status: 1
-            - massarIdentifier: 'ABC123456789'
+              idcsIdentifier: 5025081637
+            - massarIdentifier: 'A123456789'
               status: 1
-            - massarIdentifier: 'DEF987654321'
+              idcsIdentifier: 5025081636
+            - massarIdentifier: 'A987654321'
               status: 0
+              idcsIdentifier: 5025081638
       example:
         batchId: 5
         recordCount: 3
         students:
-          - massarIdentifier: 'ABC123456789'
+          - massarIdentifier: 'A123456789'
             status: 1
-          - massarIdentifier: 'ABC123456790'
+            idcsIdentifier: 5025081636
+          - massarIdentifier: 'A123456790'
             status: 1
-          - massarIdentifier: 'DEF987654321'
+            idcsIdentifier: 5025081637
+          - massarIdentifier: 'D987654321'
             status: 0
+            idcsIdentifier: 5025081638
 
     SendStudentDataResponse:
       type: object
@@ -141,7 +148,8 @@ components:
           items:
             $ref: '#/components/schemas/RejectedStudentDetail'
           example:
-            - massarIdentifier: 'DEF987654321'
+            - massarIdentifier: 'D987654321'
+              idcsIdentifier: 5025081638
               errorCode: 4000
               description: "Massar identifier not found in the student database."
          
@@ -149,7 +157,8 @@ components:
         acceptedCount: 2
         rejectedCount: 1
         rejectedDetails:
-            - massarIdentifier: 'DEF987654321'
+            - massarIdentifier: 'D987654321'
+              idcsIdentifier: 5025081638
               errorCode: 4000
               description: "Massar identifier not found in the student database."
 
@@ -160,11 +169,16 @@ components:
         massarIdentifier:
           type: string
           description: The MASSAR identifier for the student. This is a unique identifier used in the educational system.
-          example: 'ABC123456789'
+          example: 'A123456789'
         status:
           type: integer
           description: The status of the student in the campaign. A status of 0 indicates deactivation, while 1 indicates activation.
           example: 1
+        idcsIdentifier:
+          type: integer
+          format: int64
+          description: The Digital, Civil, and Social Identifier (IDCS) of the student.
+          example: 5025081638
 
     RejectedStudentDetail:
       type: object
@@ -173,11 +187,16 @@ components:
         massarIdentifier:
           type: string
           description: The MASSAR identifier of the student whose record was rejected.
-          example: 'DEF987654321'
+          example: 'D987654321'
+        idcsIdentifier:
+          type: integer
+          format: int64
+          description: The Digital, Civil, and Social Identifier (IDCS) of the student.
+          example: 5025081638
         errorCode:
           type: integer
           description: An error code that provides more detail about why the student record was rejected.
-          example: 1001
+          example: 4000
 
 tags:
   - name: Campaign Notification
@@ -289,6 +308,9 @@ paths:
                     - "massarIdentifier must be in correct format."
                   students[0].status:
                     - "status must be 0 or 1."
+                  students[0].idcsIdentifier:
+                    - "idcsIdentifier is required."
+                    - "idcsIdentifier must be in correct format."
 
         '401':
           description: Unauthorized - Missing or invalid authentication token
